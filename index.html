@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre & Post Release Guidelines</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple-50: #EEEDFE; --purple-100: #CECBF6; --purple-600: #534AB7; --purple-800: #3C3489; --purple-900: #26215C;
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-400: #1D9E75; --teal-600: #0F6E56; --teal-800: #085041;
+    --coral-400: #D85A30;
+    --pink-400: #D4537E;
+    --blue-400: #378ADD; --blue-600: #185FA5; --blue-800: #0C447C;
+    --amber-50: #FAEEDA; --amber-400: #BA7517; --amber-800: #633806;
+    --red-50: #FCEBEB; --red-600: #A32D2D;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-200: #B4B2A9; --gray-400: #888780; --gray-600: #5F5E5A; --gray-800: #444441;
+    --bg: #f8f7f5;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.09);
+    --border-md: rgba(0,0,0,0.15);
+    --text-primary: #1a1a18;
+    --text-secondary: #5F5E5A;
+    --text-muted: #888780;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 2rem 2.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 12px rgba(0,0,0,0.04);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--purple-600), var(--teal-400));
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-mark svg { width: 18px; height: 18px; }
+  .page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+  }
+  .tab-btn {
+    position: relative;
+    padding: 10px 22px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -0.5px;
+    transition: color 0.18s, border-color 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .tab-btn .tab-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gray-200);
+    transition: background 0.18s;
+  }
+  .tab-btn:hover { color: var(--text-secondary); }
+  .tab-btn.active { color: var(--text-primary); }
+  .tab-btn.pre.active { border-bottom-color: var(--purple-600); color: var(--purple-600); }
+  .tab-btn.pre.active .tab-dot { background: var(--purple-600); }
+  .tab-btn.post.active { border-bottom-color: var(--teal-400); color: var(--teal-400); }
+  .tab-btn.post.active .tab-dot { background: var(--teal-400); }
+
+  /* CONTENT */
+  .content-area { padding: 2rem 2.5rem 3rem; max-width: 1000px; margin: 0 auto; }
+  .tab-panel { display: none; animation: fadeIn 0.22s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* PHASE HEADER BANNER */
+  .phase-banner {
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .phase-banner.pre { background: var(--purple-50); border: 0.5px solid var(--purple-100); }
+  .phase-banner.post { background: var(--teal-50); border: 0.5px solid var(--teal-100); }
+  .banner-left { display: flex; align-items: center; gap: 12px; }
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .pre .phase-badge { background: var(--purple-600); color: #fff; }
+  .post .phase-badge { background: var(--teal-400); color: #fff; }
+  .banner-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .pre .banner-title { color: var(--purple-800); }
+  .post .banner-title { color: var(--teal-800); }
+  .version-chip {
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(0,0,0,0.06);
+    color: var(--text-secondary);
+  }
+
+  /* GRID */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .one-col { margin-bottom: 14px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } .content-area { padding: 1.25rem 1rem 2rem; } .page-header { padding: 1.25rem 1rem 0; } }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+  }
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 12px;
+  }
+
+  /* ENV */
+  .env-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .env-row:last-child { margin-bottom: 0; }
+  .env-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .env-region { color: var(--text-secondary); min-width: 110px; font-size: 13px; }
+  .env-link { color: var(--blue-600); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 12px; word-break: break-all; }
+  .env-link:hover { text-decoration: underline; }
+
+  /* CONFIG TABLE */
+  .config-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .config-table tr { border-bottom: 0.5px solid var(--border); }
+  .config-table tr:last-child { border-bottom: none; }
+  .config-table td { padding: 7px 0; vertical-align: top; }
+  .config-table td:first-child { color: var(--text-muted); width: 45%; padding-right: 10px; }
+  .config-table td:last-child { font-weight: 500; color: var(--text-primary); font-family: 'DM Mono', monospace; font-size: 12px; word-break: break-all; }
+
+  /* NOTE BOX */
+  .note-box {
+    background: var(--amber-50);
+    border: 0.5px solid rgba(186,117,23,0.3);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--amber-800);
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .note-icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* TEAM TABLE */
+  .team-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .team-table th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; padding: 0 0 10px; border-bottom: 0.5px solid var(--border); }
+  .team-table td { padding: 10px 0; border-bottom: 0.5px solid var(--border); vertical-align: top; }
+  .team-table tr:last-child td { border-bottom: none; }
+  .team-table td:first-child { width: 38%; padding-right: 12px; }
+  .region-name { font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+  .region-sub { font-size: 11px; padding: 2px 7px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 500; }
+  .tag-smoke { background: var(--amber-50); color: var(--amber-400); }
+  .tag-full { background: var(--teal-50); color: var(--teal-600); }
+  .tag-special { background: var(--purple-50); color: var(--purple-600); }
+  .member-list { color: var(--text-secondary); line-height: 1.7; }
+
+  /* FUNC GRID */
+  .func-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .func-item {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .func-item:hover { background: var(--surface); border-color: var(--border-md); color: var(--text-primary); }
+
+  /* BUG + LINKS */
+  .kv-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; gap: 12px; }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-key { color: var(--text-muted); flex-shrink: 0; }
+  .kv-val { font-weight: 500; color: var(--text-primary); text-align: right; word-break: break-all; }
+  .tag-red { background: var(--red-50); color: var(--red-600); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+  .tag-amber { background: var(--amber-50); color: var(--amber-400); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+  .link-blue { color: var(--blue-600); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .link-blue:hover { text-decoration: underline; }
+
+  /* DEADLINE */
+  .deadline-card {
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .deadline-card.pre { background: var(--purple-50); border: 0.5px solid var(--purple-100); }
+  .deadline-card.post { background: var(--teal-50); border: 0.5px solid var(--teal-100); }
+  .deadline-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .pre .deadline-label { color: var(--purple-600); }
+  .post .deadline-label { color: var(--teal-600); }
+  .deadline-date { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+  .pre .deadline-date { color: var(--purple-800); }
+  .post .deadline-date { color: var(--teal-800); }
+  .deadline-time { font-size: 13px; margin-top: 4px; font-family: 'DM Mono', monospace; font-weight: 400; }
+  .pre .deadline-time { color: var(--purple-600); }
+  .post .deadline-time { color: var(--teal-600); }
+
+  .section-label-row {
+    display: flex; align-items: center; gap: 10px; margin: 0 0 10px;
+  }
+  .section-line { flex: 1; height: 0.5px; background: var(--border); }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-top">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9L7.5 13.5L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="page-title">Pre &amp; Post Release Guidelines</span>
+    <span class="page-subtitle">v3.9.5</span>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn pre active" onclick="switchTab('pre')">
+      <span class="tab-dot"></span>
+      Pre-Release
+    </button>
+    <button class="tab-btn post" onclick="switchTab('post')">
+      <span class="tab-dot"></span>
+      Post-Release
+    </button>
+  </div>
+</div>
+
+<div class="content-area">
+
+  <!-- PRE-RELEASE TAB -->
+  <div class="tab-panel active" id="panel-pre">
+
+    <div class="phase-banner pre">
+      <div class="banner-left">
+        <span class="phase-badge">Pre-Release</span>
+        <span class="banner-title">Validation Assignment</span>
+      </div>
+      <span class="version-chip">v3.9.5 · Sandbox</span>
+    </div>
+
+    <!-- Section: Environment & Config -->
+    <div class="section-label-row"><span class="section-label">Environment &amp; Configuration</span><span class="section-line"></span></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Regional URLs — Sandbox</div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#378ADD;"></span>
+          <span class="env-region">North America</span>
+          <a href="https://nuwave.sandbox.ipilot.io/" class="env-link" target="_blank">nuwave.sandbox.ipilot.io</a>
+        </div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#1D9E75;"></span>
+          <span class="env-region">Europe</span>
+          <a href="https://nuwave.uk.sandbox.ipilot.io/" class="env-link" target="_blank">nuwave.uk.sandbox.ipilot.io</a>
+        </div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#D85A30;"></span>
+          <span class="env-region">Oceania</span>
+          <a href="https://nuwave.au.sandbox.ipilot.io/" class="env-link" target="_blank">nuwave.au.sandbox.ipilot.io</a>
+        </div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#D4537E;"></span>
+          <span class="env-region">Asia Pacific</span>
+          <a href="https://nuwave.au.sandbox.ipilot.io/" class="env-link" target="_blank">nuwave.au.sandbox.ipilot.io</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Configuration</div>
+        <table class="config-table">
+          <tr><td>Route label</td><td>BPMS_TEST</td></tr>
+          <tr><td>Outbound route</td><td>SND:0:0001</td></tr>
+          <tr><td>Five9 POID</td><td>134750</td></tr>
+          <tr><td>Rainbow FQDN</td><td>46647.rainbow.com</td></tr>
+        </table>
+        <div class="note-box">
+          <span class="note-icon">⚠</span>
+          Outbound route may vary per region — confirm with the respective regional team before proceeding.
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Team Allocation -->
+    <div class="section-label-row" style="margin-top:1.5rem;"><span class="section-label">Task Allocation</span><span class="section-line"></span></div>
+    <div class="one-col">
+      <div class="card">
+        <div class="card-label">Region-wise team allocation</div>
+        <table class="team-table">
+          <tr><th>Region</th><th>Members</th></tr>
+          <tr>
+            <td><div class="region-name">North America</div><span class="region-sub tag-full">Full testing</span></td>
+            <td><div class="member-list">Rutul, Zalak, Janvi, Mayur, Yogita</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Europe</div><span class="region-sub tag-smoke">Smoke testing</span></td>
+            <td><div class="member-list">Hardik, Margesh</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Oceania &amp; Asia Pacific</div><span class="region-sub tag-smoke">Smoke testing</span></td>
+            <td><div class="member-list">Pavan, Prajakta, Kush</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Sub-modules</div><span class="region-sub tag-special">Special scope</span></td>
+            <td><div class="member-list">Hetal's team, Dhanal's team, Margesh</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Feature tickets</div><span class="region-sub tag-special">Special scope</span></td>
+            <td><div class="member-list">Hetal, Dhanal, Gunjan</div></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section: Functionalities -->
+    <div class="section-label-row" style="margin-top:1.5rem;"><span class="section-label">Functionalities to Validate</span><span class="section-line"></span></div>
+    <div class="one-col">
+      <div class="card">
+        <div class="card-label">All regions — complete module coverage</div>
+        <div class="func-grid">
+          <div class="func-item">Order process</div>
+          <div class="func-item">Inventory</div>
+          <div class="func-item">Reports</div>
+          <div class="func-item">Billing transactions</div>
+          <div class="func-item">Bulk management</div>
+          <div class="func-item">Manage inventory</div>
+          <div class="func-item">Provision assignment</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Bug + Deadline -->
+    <div class="section-label-row" style="margin-top:1.5rem;"><span class="section-label">Bug Reporting &amp; Deadline</span><span class="section-line"></span></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Bug reporting guidelines</div>
+        <div class="kv-row"><span class="kv-key">Pre-Release Bug Label</span><span class="tag-red">PreSP56</span></div>
+		<div class="kv-row"><span class="kv-key">Working Feature Broken label</span><span class="tag-amber">WFB56</span></div>
+        <div class="kv-row"><span class="kv-key">Bug Parent epic</span><a href="https://nuwavecomm.atlassian.net/browse/IP-39784" class="link-blue" target="_blank">IP-39784 ↗</a></div>
+        <div class="kv-row"><span class="kv-key">Pre-Release Time logging</span><a href="https://nuwavecomm.atlassian.net/browse/IP-39787" class="link-blue" target="_blank">IP-39787 ↗</a></div>
+        <div class="kv-row"><span class="kv-key">TestMo run</span><a href="https://nuwave.testmo.net/runs/view/984" class="link-blue" target="_blank">Run #984 ↗</a></div>
+      </div>
+      <div class="deadline-card pre">
+        <div class="deadline-label">Completion deadline</div>
+        <div class="deadline-date">13th May 2026</div>
+        <div class="deadline-time">3:00 PM</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- POST-RELEASE TAB -->
+  <div class="tab-panel" id="panel-post">
+
+    <div class="phase-banner post">
+      <div class="banner-left">
+        <span class="phase-badge">Post-Release</span>
+        <span class="banner-title">Validation Assignment</span>
+      </div>
+      <span class="version-chip">v3.9.5 · Devteam</span>
+    </div>
+
+    <!-- Section: Environment & Config -->
+    <div class="section-label-row"><span class="section-label">Environment &amp; Configuration</span><span class="section-line"></span></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Regional URLs — Devteam</div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#378ADD;"></span>
+          <span class="env-region">North America</span>
+          <a href="https://devteam.ipilot.io/" class="env-link" target="_blank">devteam.ipilot.io</a>
+        </div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#1D9E75;"></span>
+          <span class="env-region">Europe</span>
+          <a href="https://devteameu.ipilot.io/" class="env-link" target="_blank">devteameu.ipilot.io</a>
+        </div>
+        <div class="env-row">
+          <span class="env-dot" style="background:#D85A30;"></span>
+          <span class="env-region">Oceania &amp; AP</span>
+          <a href="https://devteamau.ipilot.io/" class="env-link" target="_blank">devteamau.ipilot.io</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Configuration</div>
+        <table class="config-table">
+          <tr><td>Route label</td><td>BPMS_TEST</td></tr>
+          <tr><td>Outbound route</td><td>NUW:0:0001</td></tr>
+          <tr><td>Five9 POID</td><td>123450000 / 123460000</td></tr>
+          <tr><td>Genesys POID</td><td>testdornfqdn1 / testdornfqdn2</td></tr>
+          <tr><td>Rainbow FQDN</td><td>12345.rainbow.com</td></tr>
+        </table>
+        <div class="note-box">
+          <span class="note-icon">⚠</span>
+          Outbound route may vary per region — confirm with the respective regional team before proceeding.
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Team Allocation -->
+    <div class="section-label-row" style="margin-top:1.5rem;"><span class="section-label">Task Allocation</span><span class="section-line"></span></div>
+    <div class="one-col">
+      <div class="card">
+        <div class="card-label">Region-wise team allocation</div>
+        <table class="team-table">
+          <tr><th>Region</th><th>Members</th></tr>
+          <tr>
+            <td><div class="region-name">North America</div><span class="region-sub tag-full">Full testing</span></td>
+            <td><div class="member-list">Rutul, Zalak, Janvi, Yogita, Gunjan, Niki</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Europe</div><span class="region-sub tag-full">Full testing</span></td>
+            <td><div class="member-list">Dhanal, Hardik, Shraddha</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Oceania &amp; Asia Pacific</div><span class="region-sub tag-full">Full testing</span></td>
+            <td><div class="member-list">Pavan, Prajakta, Kush</div></td>
+          </tr>
+          <tr>
+            <td><div class="region-name">Sub-modules &amp; Reseller</div><span class="region-sub tag-special">Special scope</span></td>
+            <td><div class="member-list">Hetal, Margesh</div></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section: Functionalities -->
+    <div class="section-label-row" style="margin-top:1.5rem;"><span class="section-label">Functionalities to Validate</span><span class="section-line"></span></div>
+    <div class="one-col">
+      <div class="card">
+        <div class="card-label">All regions — complete module coverage</div>
+        <div class="func-grid">
+          <div class="func-item">Order process</div>
+          <div class="func-item">Inventory</div>
+          <div class="func-item">Reports</div>
+          <div class="func-item">Billing transactions</div>
+          <div class="func-item">Bulk management</div>
+          <div class="func-item">Manage inventory</div>
+          <div class="func-item">Provision assign</div>
+          <div class="func-item">Reseller customer creation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Bug + Deadline -->
+    <div class="section-label-row" style="margin-top:1.5rem;"><span class="section-label">Bug Reporting &amp; Deadline</span><span class="section-line"></span></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Bug reporting guidelines</div>
+        <div class="kv-row"><span class="kv-key">Post-Release Bug label</span><span class="tag-red">PostSP56</span></div>
+        <div class="kv-row"><span class="kv-key">Working Feature Broken label</span><span class="tag-amber">WFB56</span></div>
+        <div class="kv-row"><span class="kv-key">Bug Parent epic</span><a href="https://nuwavecomm.atlassian.net/browse/IP-39785" class="link-blue" target="_blank">IP-39785 ↗</a></div>
+        <div class="kv-row"><span class="kv-key">Post-Release Time logging</span><a href="https://nuwavecomm.atlassian.net/browse/IP-39790" class="link-blue" target="_blank">IP-39790 ↗</a></div>
+        <div class="kv-row"><span class="kv-key">TestMo run</span><a href="https://nuwave.testmo.net/runs/view/1012" class="link-blue" target="_blank">Run #1012 ↗</a></div>
+      </div>
+      <div class="deadline-card post">
+        <div class="deadline-label">Completion deadline</div>
+        <div class="deadline-date">16th May 2026</div>
+        <div class="deadline-time">3:00 PM</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('.tab-btn.' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+</script>
+</body>
+</html>
